@@ -2,8 +2,11 @@ using MelonLoader;
 using BTD_Mod_Helper;
 using BTD_Mod_Helper.Api.ModOptions;
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
-using Il2CppAssets.Scripts.Simulation; // <--- This line is important
+using Il2CppAssets.Scripts.Simulation;
 using UnityEngine;
+
+// Add this alias for convenience
+using Simulation = Il2CppAssets.Scripts.Simulation.Simulation;
 
 [assembly: MelonInfo(typeof(MoneyInputMod.Main), "Money Input Mod", "1.0.0", "DeinName")]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
@@ -48,8 +51,8 @@ namespace MoneyInputMod
                         {
                             if (InGame.instance != null && InGame.instance.bridge != null)
                             {
-                                // FIX: CashSource.Mod is available because of the using statement above
-                                InGame.instance.bridge.AddCash(moneyAmount, CashSource.Mod);
+                                // FIX: Use the correct type for CashSource
+                                InGame.instance.bridge.AddCash(moneyAmount, Simulation.CashSource.Mod);
                                 MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
                             }
                             else
