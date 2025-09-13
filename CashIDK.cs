@@ -48,8 +48,8 @@ namespace MoneyInputMod
                         {
                             if (InGame.instance != null && InGame.instance.bridge != null)
                             {
-                                // Use your custom CashSource enum
-                                InGame.instance.bridge.AddCash(moneyAmount, CashSource.Mod);
+                                // FIX: Use correct cash source type (assuming 3 is Mod, use your game's enum value for Mod if different)
+                                InGame.instance.bridge.AddCash(moneyAmount, (Il2CppAssets.Scripts.Simulation.Simulation.CashSource)3);
                                 MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
                             }
                             else
