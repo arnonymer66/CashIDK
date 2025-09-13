@@ -1,4 +1,4 @@
-﻿namespace CashIDK;
+namespace CashIDK;
 
 public static class ModHelperData
 {
