@@ -1,0 +1,28 @@
+name: .NET Clean and Build
+
+on:
+  push:
+    branches:
+      - main  # Der Workflow wird ausgeführt, wenn Änderungen an der "main" Branch gepusht werden
+  pull_request:
+    branches:
+      - main  # Der Workflow wird auch bei Pull Requests zur main-Branch ausgeführt
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Du kannst auch windows-latest verwenden, je nachdem, was du benötigst
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3  # Checkt den Code aus dem Repository aus
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.x'  # Du kannst hier auch eine andere .NET Version angeben, z. B. 5.x oder 7.x
+
+    - name: Clean project
+      run: dotnet clean CashIDK/CashIDK.csproj  # Entfernt alle gebauten Artefakte
+
+    - name: Build project
+      run: dotnet build -c Release CashIDK/CashIDK.csproj  # Baut das Projekt nach der Bereinigung
