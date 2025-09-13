@@ -1,17 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>CashIDK</RootNamespace>
-        <Configurations>Debug;Release</Configurations>
-        <Nullable>enable</Nullable>
-        <AssemblyName>CashIDK</AssemblyName>
-        <LangVersion>latest</LangVersion>
-        <Optimize>False</Optimize>
-        <DebugType>embedded</DebugType>
-    </PropertyGroup>
-    <ItemGroup>
-        <Content Include=".github\workflows\build.yml" />
-    </ItemGroup>
 
-    <Import Project="..\btd6.targets" />
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>CashIDK</RootNamespace>
+    <Configurations>Debug;Release</Configurations>
+    <Nullable>enable</Nullable>
+    <AssemblyName>CashIDK</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Optimize>false</Optimize>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Hier werden alle C#-Dateien im Ordner kompiliert -->
+    <Compile Include="**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include=".github\workflows\build.yml" />
+  </ItemGroup>
+
+  <Import Project="..\btd6.targets" />
+
 </Project>
