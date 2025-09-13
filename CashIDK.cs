@@ -42,19 +42,11 @@ namespace MoneyInputMod
             {
                 GUI.Box(new Rect(10, 10, 220, 90), "Geld eingeben");
 
-                // Wenn das Eingabefeld sichtbar ist und wir den Fokus darauf gesetzt haben
-                if (isFocused)
-                {
-                    inputText = GUI.TextField(new Rect(20, 40, 200, 20), inputText, 25);
-                    isFocused = false; // Fokus nach der ersten Eingabe setzen
-                }
-                else
-                {
-                    // Benutzer kann hier noch Eingaben machen, ohne den Fokus zu verlieren
-                    inputText = GUI.TextField(new Rect(20, 40, 200, 20), inputText, 25);
-                }
+                // Verwende GUILayout.TextField anstelle von GUI.TextField
+                GUILayout.BeginArea(new Rect(10, 10, 220, 90));
+                inputText = GUILayout.TextField(inputText, 25);
 
-                if (GUI.Button(new Rect(20, 65, 90, 20), "OK"))
+                if (GUILayout.Button("OK"))
                 {
                     if (int.TryParse(inputText, out int moneyAmount))
                     {
@@ -84,12 +76,12 @@ namespace MoneyInputMod
                     showInput = false;
                 }
 
-                if (GUI.Button(new Rect(130, 65, 90, 20), "Abbrechen"))
+                if (GUILayout.Button("Abbrechen"))
                 {
                     showInput = false;
                 }
+                GUILayout.EndArea();
             }
         }
     }
 }
-
