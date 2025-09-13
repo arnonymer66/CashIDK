@@ -51,6 +51,10 @@ namespace MoneyInputMod
                             // Zahlen (0-9) einfügen
                             inputText += key.ToString().Replace("Alpha", "");
                         }
+                        else if (key == KeyCode.Backspace && inputText.Length > 0) // Backspace zum Löschen
+                        {
+                            inputText = inputText.Substring(0, inputText.Length - 1);
+                        }
                     }
 
                     if (Input.GetKeyDown(KeyCode.Return)) // Wenn "Enter" gedrückt wird
@@ -74,7 +78,6 @@ namespace MoneyInputMod
                             {
                                 MelonLogger.Warning("Bitte eine positive Zahl eingeben. (Please enter a positive number.)");
                             }
-
                         }
                         else
                         {
@@ -93,7 +96,7 @@ namespace MoneyInputMod
             {
                 GUI.Box(new Rect(10, 10, 220, 90), "Geld eingeben");
 
-                // Anzeigen des Textfelds
+                // Anzeigen des Textfelds mit der eingegebenen Zahl
                 GUILayout.BeginArea(new Rect(10, 10, 220, 90));
                 inputText = GUILayout.TextField(inputText, 25); // Eingabefeld für Zahlen
 
@@ -138,4 +141,3 @@ namespace MoneyInputMod
         }
     }
 }
-
