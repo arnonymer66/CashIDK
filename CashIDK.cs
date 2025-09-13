@@ -2,7 +2,7 @@ using MelonLoader;
 using BTD_Mod_Helper;
 using BTD_Mod_Helper.Api.ModOptions;
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
-using Il2CppAssets.Scripts.Simulation; // <--- Add this!
+using Il2CppAssets.Scripts.Simulation; // <--- This line is important
 using UnityEngine;
 
 [assembly: MelonInfo(typeof(MoneyInputMod.Main), "Money Input Mod", "1.0.0", "DeinName")]
@@ -19,6 +19,7 @@ namespace MoneyInputMod
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
+                // Show the input box only if the game is running
                 if (InGame.instance != null)
                 {
                     showInput = true;
@@ -47,7 +48,7 @@ namespace MoneyInputMod
                         {
                             if (InGame.instance != null && InGame.instance.bridge != null)
                             {
-                                // FIX: Add the second required parameter
+                                // FIX: CashSource.Mod is available because of the using statement above
                                 InGame.instance.bridge.AddCash(moneyAmount, CashSource.Mod);
                                 MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
                             }
