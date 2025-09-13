@@ -12,11 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Hier werden alle C#-Dateien im Ordner kompiliert -->
-    <Compile Include="**/*.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include=".github\workflows\build.yml" />
   </ItemGroup>
 
