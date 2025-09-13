@@ -16,11 +16,17 @@ namespace MoneyInputMod
 
         public override void OnUpdate()
         {
-            // Check if "E" is pressed
             if (Input.GetKeyDown(KeyCode.E))
             {
-                showInput = true;
-                inputText = "";
+                if (InGame.instance != null)
+                {
+                    showInput = true;
+                    inputText = "";
+                }
+                else
+                {
+                    MelonLogger.Warning("Du bist nicht im Spiel! (You are not in-game!)");
+                }
             }
         }
 
@@ -36,12 +42,26 @@ namespace MoneyInputMod
                 {
                     if (int.TryParse(inputText, out int moneyAmount))
                     {
-                        InGame.instance.bridge.AddCash(moneyAmount);
-                        MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
+                        if (moneyAmount > 0)
+                        {
+                            if (InGame.instance != null && InGame.instance.bridge != null)
+                            {
+                                InGame.instance.bridge.AddCash(moneyAmount);
+                                MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
+                            }
+                            else
+                            {
+                                MelonLogger.Warning("InGame bridge nicht verfügbar! (InGame bridge not available!)");
+                            }
+                        }
+                        else
+                        {
+                            MelonLogger.Warning("Bitte eine positive Zahl eingeben. (Please enter a positive number.)");
+                        }
                     }
                     else
                     {
-                        MelonLogger.Warning("Ungültige Zahl eingegeben.");
+                        MelonLogger.Warning("Ungültige Zahl eingegeben. (Invalid number entered.)");
                     }
 
                     showInput = false;
@@ -53,5 +73,10 @@ namespace MoneyInputMod
                 }
             }
         }
+
+        // REMOVE or comment out the invalid override:
+        // public override BloonResult OnBloonLeaked(Bloon bloon) { ... }
+        // public override void OnBloonLeaked(Bloon bloon) { ... }
+        // If you want to handle bloon leaks, use appropriate event hooks from BTD_Mod_Helper API (see docs)
     }
 }
