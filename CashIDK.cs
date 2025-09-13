@@ -3,23 +3,13 @@ using BTD_Mod_Helper;
 using BTD_Mod_Helper.Api.ModOptions;
 using BTD_Mod_Helper.Api.Helpers;
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
-using Il2CppAssets.Scripts.Simulation.Bloons;
 using UnityEngine;
 
-[assembly: MelonInfo(typeof(CashIDK.CashIDK), CashIDK.ModHelperData.Name, CashIDK.ModHelperData.Version, CashIDK.ModHelperData.RepoOwner)]
+[assembly: MelonInfo(typeof(CashIDK.CashIDK), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
 
 namespace CashIDK
 {
-    public static class ModHelperData
-    {
-        public const string Name = "CashIDK";
-        public const string Description = "Mod mit Geld-Multiplikator, One-Hit-Kill, Godmode etc.";
-        public const string Version = "1.0.1";
-        public const string RepoOwner = "arnonymer66";
-        public const string RepoName = "CashIDK";
-    }
-
     public class CashIDK : BloonsTD6Mod
     {
         private static float moneyMultiplier = 1f;
@@ -38,9 +28,7 @@ namespace CashIDK
         public override void OnUpdate()
         {
             if (Input.GetKeyDown(KeyCode.F10))
-            {
                 showMenu = !showMenu;
-            }
         }
 
         public override void OnGUI()
@@ -57,13 +45,7 @@ namespace CashIDK
                 fontSize = 14
             };
 
-            windowRect = GUI.Window(
-                0,
-                windowRect,
-                DrawWindow,
-                new GUIContent("💻 Hacker Mod Menu"),
-                style
-            );
+            windowRect = GUI.Window(0, windowRect, DrawWindow, "💻 Hacker Mod Menu", style);
         }
 
         private void DrawWindow(int windowID)
