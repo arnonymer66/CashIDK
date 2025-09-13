@@ -1,19 +1,25 @@
 using MelonLoader;
 using BTD_Mod_Helper;
 using BTD_Mod_Helper.Api.ModOptions;
-// Ich habe hier das `using static` entfernt, weil es Namenskonflikte bringt
-// Stattdessen importiere ich den Namespace normal
 using BTD_Mod_Helper.Api.Helpers;
-
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
 using Il2CppAssets.Scripts.Simulation.Bloons;
 using UnityEngine;
 
-[assembly: MelonInfo(typeof(CashIDK.CashIDK), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
+[assembly: MelonInfo(typeof(CashIDK.CashIDK), CashIDK.ModHelperData.Name, CashIDK.ModHelperData.Version, CashIDK.ModHelperData.RepoOwner)]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
 
 namespace CashIDK
 {
+    public static class ModHelperData
+    {
+        public const string Name = "CashIDK";
+        public const string Description = "Mod mit Geld-Multiplikator, One-Hit-Kill, Godmode etc.";
+        public const string Version = "1.0.1";
+        public const string RepoOwner = "arnonymer66";
+        public const string RepoName = "CashIDK";
+    }
+
     public class CashIDK : BloonsTD6Mod
     {
         private static float moneyMultiplier = 1f;
@@ -51,7 +57,6 @@ namespace CashIDK
                 fontSize = 14
             };
 
-            // Hier: GUI.Window mit GUIContent statt string, wenn style benutzt wird
             windowRect = GUI.Window(
                 0,
                 windowRect,
@@ -61,7 +66,6 @@ namespace CashIDK
             );
         }
 
-        // Signatur für GUI.WindowFunction: void Methode mit int Parameter
         private void DrawWindow(int windowID)
         {
             GUILayout.Label("💰 Geld-Multiplikator:");
@@ -94,22 +98,9 @@ namespace CashIDK
 
         public override void OnLateUpdate()
         {
-            // Ambiguität hier vermeiden: Benutze explizit Instances.InGame
             var ingameInstance = Instances.InGame;
             if (ingameInstance == null || ingameInstance.bridge == null) return;
 
-            // Beispiel: Feuer Rate anpassen (Pseudocode, da API nicht klar)
-            /*
-            foreach (var tower in ingameInstance.bridge.GetAllTowers())
-            {
-                foreach (var weapon in tower.towerModel.weapons)
-                {
-                    weapon.Rate = weapon.originalRate / fireRateMultiplier;
-                }
-            }
-            */
-
-            // Godmode (nicht implementiert, Platzhalter)
             if (godModeEnabled)
             {
                 // Beispiel: evtl. Leben setzen wenn API es zulässt
@@ -117,4 +108,5 @@ namespace CashIDK
             }
         }
     }
+}
 }
