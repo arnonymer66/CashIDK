@@ -36,7 +36,7 @@ namespace MoneyInputMod
                 {
                     if (int.TryParse(inputText, out int moneyAmount))
                     {
-                        InGame.instance.AddCash(moneyAmount);
+                        InGame.instance.bridge.AddCash(moneyAmount);
                         MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
                     }
                     else
