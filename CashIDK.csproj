@@ -1,18 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <IsPackable>false</IsPackable>
-    <RootNamespace>CashIDK</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>CashIDK</RootNamespace>
+        <Configurations>Debug;Release</Configurations>
+        <Nullable>enable</Nullable>
+        <AssemblyName>CashIDK</AssemblyName>
+        <LangVersion>latest</LangVersion>
+        <Optimize>False</Optimize>
+        <DebugType>embedded</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Include=".github\workflows\build.yml" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="BTD-Mod-Helper" Version="3.15.5" />
-    <PackageReference Include="MelonLoader" Version="0.5.7" />
-  </ItemGroup>
-
-  <!-- Only run the copy command on Windows -->
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Condition=" '$(OS)' == 'Windows_NT' "
-          Command="copy &quot;$(TargetPath)&quot; &quot;C:\Users\Randy\Documents\SteamLibrary\steamapps\common\BloonsTD6\Mods&quot; /y" />
-  </Target>
+    <Import Project="..\btd6.targets" />
 </Project>
