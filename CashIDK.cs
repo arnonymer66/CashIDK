@@ -17,11 +17,14 @@ namespace MoneyInputMod
 
         public override void OnUpdate()
         {
+            // Debugging: Überprüfen, ob E wirklich gedrückt wird
             if (Input.GetKeyDown(KeyCode.E))
             {
+                MelonLogger.Msg("E gedrückt!"); // Zeigt an, wenn E gedrückt wurde
                 // Show the input box only if the game is running
                 if (InGame.instance != null)
                 {
+                    MelonLogger.Msg("Spiel läuft. Eingabefeld wird angezeigt.");
                     showInput = true;
                     inputText = "";
                 }
@@ -34,6 +37,7 @@ namespace MoneyInputMod
 
         public override void OnGUI()
         {
+            // Debugging: Überprüfen, ob showInput korrekt gesetzt wird
             if (showInput)
             {
                 GUI.Box(new Rect(10, 10, 220, 90), "Geld eingeben");
@@ -78,3 +82,4 @@ namespace MoneyInputMod
         }
     }
 }
+
