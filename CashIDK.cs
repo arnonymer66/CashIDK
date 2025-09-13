@@ -7,6 +7,7 @@ using static BTD_Mod_Helper.Api.Helpers.Instances;
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
 using Il2CppAssets.Scripts.Simulation.Bloons;
 using UnityEngine;
+using CashIDK;
 
 // ❗ Wenn du `ModHelperData.cs` hast, verwende diese Zeile:
 [assembly: MelonInfo(typeof(CashIDK.CashIDK), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
