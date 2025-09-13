@@ -1,19 +1,15 @@
 using MelonLoader;
 using BTD_Mod_Helper;
 using BTD_Mod_Helper.Api.ModOptions;
-// Wichtig: "Instances" ist kein Namespace → using static!
-using static BTD_Mod_Helper.Api.Helpers.Instances;
+// Ich habe hier das `using static` entfernt, weil es Namenskonflikte bringt
+// Stattdessen importiere ich den Namespace normal
+using BTD_Mod_Helper.Api.Helpers;
 
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
 using Il2CppAssets.Scripts.Simulation.Bloons;
 using UnityEngine;
-using CashIDK;
 
-// ❗ Wenn du `ModHelperData.cs` hast, verwende diese Zeile:
 [assembly: MelonInfo(typeof(CashIDK.CashIDK), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
-// ❗ Wenn nicht, verwende stattdessen diese:
-// [assembly: MelonInfo(typeof(CashIDK.CashIDK), "CashIDK", "1.0.0", "arnonymer66)]
-
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
 
 namespace CashIDK
@@ -55,15 +51,17 @@ namespace CashIDK
                 fontSize = 14
             };
 
+            // Hier: GUI.Window mit GUIContent statt string, wenn style benutzt wird
             windowRect = GUI.Window(
-                id: 0,
-                clientRect: windowRect,
-                func: DrawWindow,
-                text: "💻 Hacker Mod Menu",
-                style: style
+                0,
+                windowRect,
+                DrawWindow,
+                new GUIContent("💻 Hacker Mod Menu"),
+                style
             );
         }
 
+        // Signatur für GUI.WindowFunction: void Methode mit int Parameter
         private void DrawWindow(int windowID)
         {
             GUILayout.Label("💰 Geld-Multiplikator:");
@@ -96,14 +94,13 @@ namespace CashIDK
 
         public override void OnLateUpdate()
         {
-            if (InGame.instance == null || InGame.instance.bridge == null) return;
+            // Ambiguität hier vermeiden: Benutze explizit Instances.InGame
+            var ingameInstance = Instances.InGame;
+            if (ingameInstance == null || ingameInstance.bridge == null) return;
 
-            // Beispiel: Zugriff auf Türme über InGame.instance?
-            // Du müsstest evtl. manuell an TowerManager ran, wenn das unterstützt wird
-
-            // Beispielhafte Nutzung – auskommentiert bis du Zugriff auf Tower bekommst
+            // Beispiel: Feuer Rate anpassen (Pseudocode, da API nicht klar)
             /*
-            foreach (var tower in InGame.instance.bridge.GetAllTowers())
+            foreach (var tower in ingameInstance.bridge.GetAllTowers())
             {
                 foreach (var weapon in tower.towerModel.weapons)
                 {
@@ -112,15 +109,12 @@ namespace CashIDK
             }
             */
 
-            // Godmode (nicht implementiert → placeholder)
+            // Godmode (nicht implementiert, Platzhalter)
             if (godModeEnabled)
             {
-                // Leider ist kein offizieller Weg dokumentiert, um Leben zu setzen.
-                // Du könntest hier ggf. InGame.instance.bridge.SetHealth(...) nutzen, falls verfügbar.
+                // Beispiel: evtl. Leben setzen wenn API es zulässt
+                // ingameInstance.bridge.SetHealth(ingameInstance.bridge.GetMaxHealth());
             }
         }
-
-        // OnBloonDefeated entfernt, weil BloonResult nicht mehr existiert in aktuellen APIs
-        // Stattdessen müsstest du alternative Methoden nutzen (z. B. Hooks auf bloon events)
     }
 }
