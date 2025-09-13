@@ -1,4 +1,3 @@
-
 using MelonLoader;
 using BTD_Mod_Helper;
 using BTD_Mod_Helper.Api.Helpers;
@@ -11,13 +10,14 @@ namespace CashIDK
 {
     public class CashIDK : BloonsTD6Mod
     {
+        private static float fireRateMultiplier = 1f;
         private static bool godModeEnabled = false;
         private Rect windowRect = new Rect(20, 20, 300, 200);
         private bool showMenu = true;
 
         public override void OnApplicationStart()
         {
-            ModHelper.Msg<CashIDK>("CashIDK loaded!");
+            ModHelper.Msg<CashIDK>("CashIDK geladen!");
         }
 
         public override void OnUpdate()
@@ -29,13 +29,18 @@ namespace CashIDK
         public override void OnGUI()
         {
             if (!showMenu) return;
-
             windowRect = GUI.Window(0, windowRect, DrawWindow, "CashIDK Menu");
         }
 
         private void DrawWindow(int windowID)
         {
-            if (GUILayout.Button(godModeEnabled ? "God Mode: AN" : "God Mode: AUS"))
+            GUILayout.Label("Fire Rate Multiplier");
+            GUILayout.Label($"x{fireRateMultiplier:F1}");
+            fireRateMultiplier = GUILayout.HorizontalSlider(fireRateMultiplier, 0.1f, 10f);
+
+            GUILayout.Space(10);
+
+            if (GUILayout.Button(godModeEnabled ? "🛡️ God Mode: AN" : "🛡️ God Mode: AUS"))
                 godModeEnabled = !godModeEnabled;
 
             GUILayout.Label("F10 zum Menü ein-/ausblenden");
@@ -49,9 +54,10 @@ namespace CashIDK
 
             if (godModeEnabled)
             {
-                // Beispiel (noch nicht aktiv)
+                // Beispiel: Max Health setzen
                 // ingame.bridge.SetHealth(ingame.bridge.GetMaxHealth());
             }
         }
     }
 }
+
