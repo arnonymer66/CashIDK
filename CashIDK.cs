@@ -2,6 +2,7 @@ using MelonLoader;
 using BTD_Mod_Helper;
 using BTD_Mod_Helper.Api.ModOptions;
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
+using Il2CppAssets.Scripts.Simulation; // <--- Add this!
 using UnityEngine;
 
 [assembly: MelonInfo(typeof(MoneyInputMod.Main), "Money Input Mod", "1.0.0", "DeinName")]
@@ -46,7 +47,8 @@ namespace MoneyInputMod
                         {
                             if (InGame.instance != null && InGame.instance.bridge != null)
                             {
-                                InGame.instance.bridge.AddCash(moneyAmount);
+                                // FIX: Add the second required parameter
+                                InGame.instance.bridge.AddCash(moneyAmount, CashSource.Mod);
                                 MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
                             }
                             else
@@ -73,10 +75,5 @@ namespace MoneyInputMod
                 }
             }
         }
-
-        // REMOVE or comment out the invalid override:
-        // public override BloonResult OnBloonLeaked(Bloon bloon) { ... }
-        // public override void OnBloonLeaked(Bloon bloon) { ... }
-        // If you want to handle bloon leaks, use appropriate event hooks from BTD_Mod_Helper API (see docs)
     }
 }
