@@ -1,12 +1,18 @@
 using MelonLoader;
 using BTD_Mod_Helper;
 using BTD_Mod_Helper.Api.ModOptions;
-using BTD_Mod_Helper.Api.Helpers.Instances;
+// Wichtig: "Instances" ist kein Namespace → using static!
+using static BTD_Mod_Helper.Api.Helpers.Instances;
+
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
 using Il2CppAssets.Scripts.Simulation.Bloons;
 using UnityEngine;
 
+// ❗ Wenn du `ModHelperData.cs` hast, verwende diese Zeile:
 [assembly: MelonInfo(typeof(CashIDK.CashIDK), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
+// ❗ Wenn nicht, verwende stattdessen diese:
+// [assembly: MelonInfo(typeof(CashIDK.CashIDK), "CashIDK", "1.0.0", "DeinName")]
+
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
 
 namespace CashIDK
@@ -40,13 +46,14 @@ namespace CashIDK
 
             GUI.backgroundColor = Color.black;
             GUI.contentColor = Color.green;
-            GUIStyle style = new GUIStyle(GUI.skin.window);
-            style.normal.background = Texture2D.blackTexture;
-            style.normal.textColor = Color.green;
-            style.fontStyle = FontStyle.Bold;
-            style.fontSize = 14;
 
-            // Hier: Window mit Stil überladenen Parameter korrekt setzen.
+            GUIStyle style = new GUIStyle(GUI.skin.window)
+            {
+                normal = { background = Texture2D.blackTexture, textColor = Color.green },
+                fontStyle = FontStyle.Bold,
+                fontSize = 14
+            };
+
             windowRect = GUI.Window(
                 id: 0,
                 clientRect: windowRect,
@@ -88,34 +95,31 @@ namespace CashIDK
 
         public override void OnLateUpdate()
         {
-            // Hole die Simulation, wenn verfügbar
-            var sim = Simulation.Instance;  // oder: Instances.Simulation, je nach API
-            if (sim == null) return;
+            if (InGame.instance == null || InGame.instance.bridge == null) return;
 
-            // Fire rate ändern: -> abhängig davon, was verfügbar ist — evtl. über TowerManager?
-            // Hier ein vereinfachter Ansatz, wenn TowerManager existiert:
+            // Beispiel: Zugriff auf Türme über InGame.instance?
+            // Du müsstest evtl. manuell an TowerManager ran, wenn das unterstützt wird
 
-            var tm = TowerManager.Instance;
-            if (tm != null)
+            // Beispielhafte Nutzung – auskommentiert bis du Zugriff auf Tower bekommst
+            /*
+            foreach (var tower in InGame.instance.bridge.GetAllTowers())
             {
-                // Ich weiß nicht, ob tm.Towers existiert, das musst du in deiner API prüfen
-                // Pseudocode:
-                // foreach (var tower in tm.GetAllTowers())
-                // {
-                //     foreach (var weapon in tower.towerModel.weapons)
-                //         weapon.Rate = weapon.originalRate / fireRateMultiplier;
-                // }
+                foreach (var weapon in tower.towerModel.weapons)
+                {
+                    weapon.Rate = weapon.originalRate / fireRateMultiplier;
+                }
             }
+            */
 
-            // Godmode: Leben auf max setzen, wenn möglich
-            var uts = UnityToSimulation.Instance;
-            if (godModeEnabled && uts != null)
+            // Godmode (nicht implementiert → placeholder)
+            if (godModeEnabled)
             {
-                // Prüfe ob GetMaxHealth und SetHealth Methoden existieren
-                // Wenn nicht, diesen Teil auskommentieren oder entfernen
-                // uts.SetHealth(uts.GetMaxHealth());
+                // Leider ist kein offizieller Weg dokumentiert, um Leben zu setzen.
+                // Du könntest hier ggf. InGame.instance.bridge.SetHealth(...) nutzen, falls verfügbar.
             }
         }
+
+        // OnBloonDefeated entfernt, weil BloonResult nicht mehr existiert in aktuellen APIs
+        // Stattdessen müsstest du alternative Methoden nutzen (z. B. Hooks auf bloon events)
     }
 }
-
