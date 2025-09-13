@@ -2,19 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>CashIDK</RootNamespace>
-    <Configurations>Debug;Release</Configurations>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AssemblyName>CashIDK</AssemblyName>
-    <LangVersion>latest</LangVersion>
-    <Optimize>false</Optimize>
-    <DebugType>embedded</DebugType>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include=".github\workflows\build.yml" />
-  </ItemGroup>
 
   <Import Project="..\btd6.targets" />
 
 </Project>
+
