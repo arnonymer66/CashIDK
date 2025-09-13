@@ -11,7 +11,7 @@ using UnityEngine;
 // ❗ Wenn du `ModHelperData.cs` hast, verwende diese Zeile:
 [assembly: MelonInfo(typeof(CashIDK.CashIDK), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
 // ❗ Wenn nicht, verwende stattdessen diese:
-// [assembly: MelonInfo(typeof(CashIDK.CashIDK), "CashIDK", "1.0.0", "DeinName")]
+// [assembly: MelonInfo(typeof(CashIDK.CashIDK), "CashIDK", "1.0.0", "arnonymer66)]
 
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
 
