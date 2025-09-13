@@ -1,4 +1,4 @@
-﻿using MelonLoader;
+using MelonLoader;
 using BTD_Mod_Helper;
 using CashIDK;
 using BTD_Mod_Helper.Api.ModOptions;
@@ -14,13 +14,11 @@ namespace CashIDK;
 
 public class CashIDK : BloonsTD6Mod
 {
-    // Konfiguration
     private static float moneyMultiplier = 1f;
     private static float fireRateMultiplier = 1f;
     private static bool oneHitEnabled = false;
     private static bool godModeEnabled = false;
 
-    // UI
     private Rect windowRect = new Rect(20, 20, 300, 360);
     private bool showMenu = true;
 
@@ -31,7 +29,6 @@ public class CashIDK : BloonsTD6Mod
 
     public override void OnUpdate()
     {
-        // Menü ein-/ausblenden mit F10
         if (Input.GetKeyDown(KeyCode.F10))
         {
             showMenu = !showMenu;
@@ -42,7 +39,6 @@ public class CashIDK : BloonsTD6Mod
     {
         if (!showMenu) return;
 
-        // UI-Styling: Hacker-Look
         GUI.backgroundColor = Color.black;
         GUI.contentColor = Color.green;
         GUIStyle style = new GUIStyle(GUI.skin.window);
@@ -91,36 +87,44 @@ public class CashIDK : BloonsTD6Mod
         var sim = InGame.instance.bridge.simulation;
         if (sim == null) return;
 
+        // 🔥 Feuerrate-Multiplikator anwenden
         foreach (var tower in sim.towers)
         {
             if (tower?.towerModel == null) continue;
 
-            // Feuerrate anpassen
             foreach (var weapon in tower.towerModel.weapons)
             {
                 if (weapon == null) continue;
                 weapon.Rate = weapon.originalRate / fireRateMultiplier;
             }
         }
-    }
 
-    public override void OnBloonDefeated(Bloon bloon, BloonResult result)
-    {
-        // Geld-Multiplikator anwenden
-        if (result.cash > 0)
-            result.cash = (int)(result.cash * moneyMultiplier);
-
-        // One Hit Kill
-        if (oneHitEnabled)
-            result.damage = bloon.maxHealth;
-    }
-
-    public override void OnBloonLeaked(Bloon bloon)
-    {
-        if (godModeEnabled && InGame.instance != null)
+        // 🛡️ Godmode aktivieren
+        if (godModeEnabled)
         {
-            // Verhindert Lebenabzug bei Leak
-            InGame.instance.bridge.SetHealth(InGame.instance.bridge.GetHealth() + bloon.bloonModel.leakDamage);
+            var bridge = InGame.instance.bridge;
+            if (bridge != null)
+            {
+                bridge.SetHealth(bridge.GetMaxHealth());
+            }
+        }
+
+        // 💰 Geld-Multiplikator anwenden (rudimentär)
+        if (moneyMultiplier > 1f)
+        {
+            var cash = InGame.instance.bridge.cash;
+            InGame.instance.bridge.cash = cash * moneyMultiplier;
+        }
+
+        // ☠️ One Hit Kill: Alle Bloons auf 1 HP setzen (Workaround)
+        if (oneHitEnabled)
+        {
+            foreach (var bloon in sim.bloons)
+            {
+                if (bloon == null) continue;
+                bloon.health = 1;
+                bloon.maxHealth = 1;
+            }
         }
     }
 }
