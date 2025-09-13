@@ -15,18 +15,19 @@ namespace MoneyInputMod
         private bool showInput = false;
         private string inputText = "";
 
+        // Flag, um den Fokus auf das Textfeld zu setzen
+        private bool isFocused = false;
+
         public override void OnUpdate()
         {
-            // Debugging: Überprüfen, ob E wirklich gedrückt wird
             if (Input.GetKeyDown(KeyCode.E))
             {
-                MelonLogger.Msg("E gedrückt!"); // Zeigt an, wenn E gedrückt wurde
-                // Show the input box only if the game is running
+                // Zeige das Eingabefeld, wenn das Spiel läuft
                 if (InGame.instance != null)
                 {
-                    MelonLogger.Msg("Spiel läuft. Eingabefeld wird angezeigt.");
                     showInput = true;
-                    inputText = "";
+                    inputText = ""; // Eingabefeld zurücksetzen
+                    isFocused = true; // Setze den Fokus
                 }
                 else
                 {
@@ -37,12 +38,21 @@ namespace MoneyInputMod
 
         public override void OnGUI()
         {
-            // Debugging: Überprüfen, ob showInput korrekt gesetzt wird
             if (showInput)
             {
                 GUI.Box(new Rect(10, 10, 220, 90), "Geld eingeben");
 
-                inputText = GUI.TextField(new Rect(20, 40, 200, 20), inputText, 25);
+                // Wenn das Eingabefeld sichtbar ist und wir den Fokus darauf gesetzt haben
+                if (isFocused)
+                {
+                    inputText = GUI.TextField(new Rect(20, 40, 200, 20), inputText, 25);
+                    isFocused = false; // Fokus nach der ersten Eingabe setzen
+                }
+                else
+                {
+                    // Benutzer kann hier noch Eingaben machen, ohne den Fokus zu verlieren
+                    inputText = GUI.TextField(new Rect(20, 40, 200, 20), inputText, 25);
+                }
 
                 if (GUI.Button(new Rect(20, 65, 90, 20), "OK"))
                 {
@@ -52,7 +62,7 @@ namespace MoneyInputMod
                         {
                             if (InGame.instance != null && InGame.instance.bridge != null)
                             {
-                                // FIX: Use correct cash source type (assuming 3 is Mod, use your game's enum value for Mod if different)
+                                // Geld hinzufügen
                                 InGame.instance.bridge.AddCash(moneyAmount, (Il2CppAssets.Scripts.Simulation.Simulation.CashSource)3);
                                 MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
                             }
