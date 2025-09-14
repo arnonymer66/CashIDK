@@ -12,132 +12,160 @@ namespace MoneyInputMod
 {
     public class Main : BloonsTD6Mod
     {
-        private bool showInput = false;
-        private string inputText = "";
-        private bool isFocused = false;
+        private bool showMenu = false;
+
+        // Variablen für die Funktionen
+        private bool godModeEnabled = false;
+        private float towerSpeed = 1.0f;
+        private int monkeyXP = 0;
+        private int monkeyMoney = 0;
+        private int trophies = 0;
+        private float gameSpeed = 1.0f; // Spielgeschwindigkeit
+        private float towerDamageMultiplier = 1.0f; // Affenschaden Multiplier
+
+        // Menü-Position und Größe
+        private Rect menuRect = new Rect(10, 10, 250, 700);
+        private bool showGodModeSection = true;
+        private bool showMonkeyMoneySection = true;
+        private bool showMonkeyXPSection = true;
+        private bool showTowerSpeedSection = true;
+        private bool showTrophiesSection = true;
+        private bool showTowerDamageSection = true;
+        private bool showGameSpeedSection = true;
 
         public override void OnUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.E)) // "E" zum Ein-/Ausblenden des Eingabefelds
+            if (Input.GetKeyDown(KeyCode.E)) // "E" zum Ein-/Ausblenden des Menüs
             {
-                if (showInput)
-                {
-                    showInput = false; // Verstecke das Eingabefeld, wenn es schon offen ist
-                }
-                else
-                {
-                    if (InGame.instance != null)
-                    {
-                        showInput = true; // Zeige das Eingabefeld
-                        inputText = ""; // Setze das Eingabefeld zurück
-                        isFocused = true; // Setze den Fokus
-                    }
-                    else
-                    {
-                        MelonLogger.Warning("Du bist nicht im Spiel! (You are not in-game!)");
-                    }
-                }
-            }
-
-            // Erlaube nur Zahlen von 0-9 und Verarbeite die Eingabe mit Enter
-            if (showInput)
-            {
-                if (Input.anyKeyDown)
-                {
-                    foreach (KeyCode key in System.Enum.GetValues(typeof(KeyCode)))
-                    {
-                        if (key.ToString().StartsWith("Alpha") && Input.GetKeyDown(key))
-                        {
-                            // Zahlen (0-9) einfügen
-                            inputText += key.ToString().Replace("Alpha", "");
-                        }
-                        else if (key == KeyCode.Backspace && inputText.Length > 0) // Backspace zum Löschen
-                        {
-                            inputText = inputText.Substring(0, inputText.Length - 1);
-                        }
-                    }
-
-                    if (Input.GetKeyDown(KeyCode.Return)) // Wenn "Enter" gedrückt wird
-                    {
-                        if (int.TryParse(inputText, out int moneyAmount))
-                        {
-                            if (moneyAmount > 0)
-                            {
-                                if (InGame.instance != null && InGame.instance.bridge != null)
-                                {
-                                    // FIX: Verwende den CashSource-Wert für Modding
-                                    InGame.instance.bridge.AddCash(moneyAmount, (Il2CppAssets.Scripts.Simulation.Simulation.CashSource)3);
-                                    MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
-                                }
-                                else
-                                {
-                                    MelonLogger.Warning("InGame bridge nicht verfügbar! (InGame bridge not available!)");
-                                }
-                            }
-                            else
-                            {
-                                MelonLogger.Warning("Bitte eine positive Zahl eingeben. (Please enter a positive number.)");
-                            }
-                        }
-                        else
-                        {
-                            MelonLogger.Warning("Ungültige Zahl eingegeben. (Invalid number entered.)");
-                        }
-
-                        showInput = false; // Verstecke das Eingabefeld nach Drücken von Enter
-                    }
-                }
+                showMenu = !showMenu;
             }
         }
 
         public override void OnGUI()
         {
-            if (showInput)
+            if (!showMenu) return;
+
+            // Beginne mit dem Menü
+            GUILayout.BeginArea(menuRect);
+
+            GUILayout.Label("Monkey Mod Menu", GUILayout.Height(30));
+
+            // God Mode - eigener Bereich
+            if (showGodModeSection)
             {
-                GUI.Box(new Rect(10, 10, 220, 90), "Geld eingeben");
-
-                // Anzeigen des Textfelds mit der eingegebenen Zahl
-                GUILayout.BeginArea(new Rect(10, 10, 220, 90));
-                inputText = GUILayout.TextField(inputText, 25); // Eingabefeld für Zahlen
-
-                // OK Button (geht auch durch Enter)
-                if (GUILayout.Button("OK") || Input.GetKeyDown(KeyCode.Return))
+                GUILayout.BeginVertical("box");
+                GUILayout.Label("God Mode");
+                godModeEnabled = GUILayout.Toggle(godModeEnabled, "Aktivieren: " + (godModeEnabled ? "ON" : "OFF"));
+                if (godModeEnabled)
                 {
-                    if (int.TryParse(inputText, out int moneyAmount))
+                    foreach (var tower in InGame.instance.bridge.GetAllTowers())
                     {
-                        if (moneyAmount > 0)
-                        {
-                            if (InGame.instance != null && InGame.instance.bridge != null)
-                            {
-                                InGame.instance.bridge.AddCash(moneyAmount, (Il2CppAssets.Scripts.Simulation.Simulation.CashSource)3);
-                                MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
-                            }
-                            else
-                            {
-                                MelonLogger.Warning("InGame bridge nicht verfügbar! (InGame bridge not available!)");
-                            }
-                        }
-                        else
-                        {
-                            MelonLogger.Warning("Bitte eine positive Zahl eingeben. (Please enter a positive number.)");
-                        }
+                        tower.life = 9999; // Unendlich Leben für Türme
                     }
-                    else
-                    {
-                        MelonLogger.Warning("Ungültige Zahl eingegeben. (Invalid number entered.)");
-                    }
-
-                    showInput = false; // Verstecke das Eingabefeld nach Drücken von OK oder Enter
                 }
-
-                // Abbrechen Button
-                if (GUILayout.Button("Abbrechen"))
-                {
-                    showInput = false; // Verstecke das Eingabefeld, wenn abgebrochen wird
-                }
-
-                GUILayout.EndArea();
+                GUILayout.EndVertical();
             }
+
+            // Monkey Money - eigener Bereich
+            if (showMonkeyMoneySection)
+            {
+                GUILayout.BeginVertical("box");
+                GUILayout.Label("Monkey Money");
+                monkeyMoney = (int)GUILayout.HorizontalSlider(monkeyMoney, 0, 10000);
+                GUILayout.Label("Wert: " + monkeyMoney);
+                if (GUILayout.Button("Add Monkey Money"))
+                {
+                    if (InGame.instance != null && InGame.instance.bridge != null)
+                    {
+                        InGame.instance.bridge.AddCash(monkeyMoney, (Il2CppAssets.Scripts.Simulation.Simulation.CashSource)3);
+                        MelonLogger.Msg($"Spieler bekam {monkeyMoney} Monkey Money.");
+                    }
+                }
+                GUILayout.EndVertical();
+            }
+
+            // Affen XP - eigener Bereich
+            if (showMonkeyXPSection)
+            {
+                GUILayout.BeginVertical("box");
+                GUILayout.Label("Affen XP");
+                monkeyXP = (int)GUILayout.HorizontalSlider(monkeyXP, 0, 10000);
+                GUILayout.Label("Wert: " + monkeyXP);
+                if (GUILayout.Button("Add Monkey XP"))
+                {
+                    var player = InGame.instance.bridge.GetPlayer();
+                    player.AddXP(monkeyXP);
+                    MelonLogger.Msg($"Spieler bekam {monkeyXP} XP.");
+                }
+                GUILayout.EndVertical();
+            }
+
+            // Türmenschussgeschwindigkeit - eigener Bereich
+            if (showTowerSpeedSection)
+            {
+                GUILayout.BeginVertical("box");
+                GUILayout.Label("Türmenschussgeschwindigkeit");
+                towerSpeed = GUILayout.HorizontalSlider(towerSpeed, 0.1f, 5.0f);
+                GUILayout.Label("Wert: " + towerSpeed.ToString("F2"));
+                if (GUILayout.Button("Set Tower Speed"))
+                {
+                    foreach (var tower in InGame.instance.bridge.GetAllTowers())
+                    {
+                        tower.projectileSpeed = towerSpeed;
+                    }
+                    MelonLogger.Msg($"Schussgeschwindigkeit der Türme auf {towerSpeed} gesetzt.");
+                }
+                GUILayout.EndVertical();
+            }
+
+            // Trophäen - eigener Bereich
+            if (showTrophiesSection)
+            {
+                GUILayout.BeginVertical("box");
+                GUILayout.Label("Trophäen: " + trophies);
+                if (GUILayout.Button("Add Trophy"))
+                {
+                    trophies++;
+                    MelonLogger.Msg($"Trophäen erhöht: {trophies}");
+                }
+                GUILayout.EndVertical();
+            }
+
+            // Affenschaden - eigener Bereich
+            if (showTowerDamageSection)
+            {
+                GUILayout.BeginVertical("box");
+                GUILayout.Label("Affenschaden Multiplier");
+                towerDamageMultiplier = GUILayout.HorizontalSlider(towerDamageMultiplier, 0.1f, 10.0f);
+                GUILayout.Label("Wert: " + towerDamageMultiplier.ToString("F2"));
+                if (GUILayout.Button("Set Tower Damage"))
+                {
+                    foreach (var tower in InGame.instance.bridge.GetAllTowers())
+                    {
+                        // Beispiel: Erhöhe den Schaden des Turms
+                        tower.attack *= towerDamageMultiplier;
+                    }
+                    MelonLogger.Msg($"Affenschaden der Türme auf {towerDamageMultiplier} gesetzt.");
+                }
+                GUILayout.EndVertical();
+            }
+
+            // Spielgeschwindigkeit - eigener Bereich
+            if (showGameSpeedSection)
+            {
+                GUILayout.BeginVertical("box");
+                GUILayout.Label("Spielgeschwindigkeit");
+                gameSpeed = GUILayout.HorizontalSlider(gameSpeed, 0.1f, 5.0f);
+                GUILayout.Label("Wert: " + gameSpeed.ToString("F2"));
+                if (GUILayout.Button("Set Game Speed"))
+                {
+                    Time.timeScale = gameSpeed;
+                    MelonLogger.Msg($"Spielgeschwindigkeit auf {gameSpeed} gesetzt.");
+                }
+                GUILayout.EndVertical();
+            }
+
+            GUILayout.EndArea();
         }
     }
 }
