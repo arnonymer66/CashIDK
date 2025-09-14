@@ -6,6 +6,7 @@ using Il2CppAssets.Scripts.Simulation;
 using UnityEngine;
 using System.Collections.Generic;
 
+// Assembly-Attribute müssen vor allen anderen Code-Elementen stehen
 [assembly: MelonInfo(typeof(MoneyInputMod.Main), "Advanced Monkey Mod", "1.0.0", "DeinName")]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
 
@@ -27,6 +28,7 @@ namespace MoneyInputMod
         // ModSettings-Instanz
         private static ModSettings menuSettings;
 
+        // Diese Methode überschreibt die UI-Einstellungen
         public override void OnSettingsUI()
         {
             GUILayout.Label("Mod Einstellungen");
@@ -40,6 +42,7 @@ namespace MoneyInputMod
             base.OnSettingsUI();
         }
 
+        // Diese Methode wird bei jedem Update des Spiels aufgerufen
         public override void OnUpdate()
         {
             // Spielgeschwindigkeit anpassen
@@ -71,6 +74,7 @@ namespace MoneyInputMod
             }
         }
 
+        // Diese Methode rendert das Mod-Menü im Spiel
         public override void OnGUI()
         {
             if (!showMenu) return;
