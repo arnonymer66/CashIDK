@@ -2,39 +2,36 @@ using MelonLoader;
 using BTD_Mod_Helper;
 using BTD_Mod_Helper.Api.ModOptions;
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
-using Il2CppAssets.Scripts.Unity.UI_New.MainMenu;
 using Il2CppAssets.Scripts.Simulation;
 using UnityEngine;
-using Il2CppAssets.Scripts.Simulation.Simulation;
+using System.Collections.Generic;
 
-[assembly: MelonInfo(typeof(MoneyInputMod.Main), "Money Input Mod", "1.0.0", "DeinName")]
+[assembly: MelonInfo(typeof(MoneyInputMod.Main), "Advanced Monkey Mod", "1.0.0", "DeinName")]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
 
 namespace MoneyInputMod
 {
     public class Main : BloonsTD6Mod
     {
+        // Menü anzeigen Flag
         private bool showMenu = false;
 
-        // Variablen für die Funktionen
+        // Game Speed und andere Modi
+        private float gameSpeed = 1.0f; 
         private bool godModeEnabled = false;
-        private float towerSpeed = 1.0f;
-        private int monkeyXP = 0;
-        private int monkeyMoney = 0;
-        private int trophies = 0;
-        private float gameSpeed = 1.0f; // Spielgeschwindigkeit
-        private float towerDamageMultiplier = 1.0f; // Affenschaden Multiplier
+        private bool infiniteXP = false;
+        private bool infiniteMoney = false;
+        private bool unlockAllTrophies = false;
+        private bool towerDamageBoost = false;
 
-        // Menü-Position und Größe
-        private Rect menuRect = new Rect(10, 10, 250, 700);
-        
-        // Referenzen zu den verschiedenen UI-Menüs
-        private GameObject modMenuUI = null;
+        // ModSettings-Instanz
         private static ModSettings menuSettings;
 
         public override void OnSettingsUI()
         {
-            // Hauptmenü-Button - wird im Hauptmenü angezeigt
+            GUILayout.Label("Mod Einstellungen");
+
+            // Schalter für das Mod-Menü
             if (GUILayout.Button("Mod Menü öffnen"))
             {
                 showMenu = !showMenu;
@@ -45,105 +42,135 @@ namespace MoneyInputMod
 
         public override void OnUpdate()
         {
-            // Menüsteuerung
-            if (showMenu)
-            {
-                UpdateMenuOptions();
-            }
-        }
+            // Spielgeschwindigkeit anpassen
+            Time.timeScale = gameSpeed;
 
-        private void UpdateMenuOptions()
-        {
-            // Wenn der GodMode aktiviert ist, setze unendliches Leben für alle Türme
             if (godModeEnabled)
             {
-                foreach (var tower in InGame.instance.bridge.GetAllTowers())
-                {
-                    tower.life = 9999; // Maximale Leben
-                }
+                EnableGodMode();
             }
 
-            // Spielgeschwindigkeit einstellen
-            Time.timeScale = gameSpeed;
+            if (infiniteXP)
+            {
+                GrantInfiniteXP();
+            }
+
+            if (infiniteMoney)
+            {
+                GrantInfiniteMoney();
+            }
+
+            if (unlockAllTrophies)
+            {
+                UnlockAllTrophies();
+            }
+
+            if (towerDamageBoost)
+            {
+                BoostTowerDamage();
+            }
         }
 
         public override void OnGUI()
         {
             if (!showMenu) return;
 
-            // Beginne mit dem Menü
-            GUILayout.BeginArea(menuRect);
+            // Mod-Menü anzeigen
+            GUILayout.BeginArea(new Rect(10, 10, 250, 500));
+            GUILayout.Label("Monkey Mod Menü", GUILayout.Height(30));
 
-            GUILayout.Label("Monkey Mod Menu", GUILayout.Height(30));
-
-            // God Mode - eigener Bereich
+            // God Mode
             GUILayout.BeginVertical("box");
             GUILayout.Label("God Mode");
             godModeEnabled = GUILayout.Toggle(godModeEnabled, "Aktivieren: " + (godModeEnabled ? "ON" : "OFF"));
             GUILayout.EndVertical();
 
-            // Monkey Money - eigener Bereich
+            // XP
             GUILayout.BeginVertical("box");
-            GUILayout.Label("Monkey Money");
-            monkeyMoney = (int)GUILayout.HorizontalSlider(monkeyMoney, 0, 10000);
-            GUILayout.Label("Wert: " + monkeyMoney);
-            if (GUILayout.Button("Add Monkey Money"))
-            {
-                if (InGame.instance != null && InGame.instance.bridge != null)
-                {
-                    InGame.instance.bridge.AddCash(monkeyMoney, (CashSource)3);
-                    MelonLogger.Msg($"Spieler bekam {monkeyMoney} Monkey Money.");
-                }
-            }
+            GUILayout.Label("Unendliche XP");
+            infiniteXP = GUILayout.Toggle(infiniteXP, "Aktivieren: " + (infiniteXP ? "ON" : "OFF"));
             GUILayout.EndVertical();
 
-            // Monkey XP - eigener Bereich
+            // Money
             GUILayout.BeginVertical("box");
-            GUILayout.Label("Affen XP");
-            monkeyXP = (int)GUILayout.HorizontalSlider(monkeyXP, 0, 10000);
-            GUILayout.Label("Wert: " + monkeyXP);
-            if (GUILayout.Button("Add Monkey XP"))
-            {
-                var player = InGame.instance.bridge.GetPlayer();
-                if (player != null)
-                {
-                    player.AddXP(monkeyXP);
-                    MelonLogger.Msg($"Spieler bekam {monkeyXP} XP.");
-                }
-            }
+            GUILayout.Label("Unendlich Geld");
+            infiniteMoney = GUILayout.Toggle(infiniteMoney, "Aktivieren: " + (infiniteMoney ? "ON" : "OFF"));
             GUILayout.EndVertical();
 
-            // Spielgeschwindigkeit - eigener Bereich
+            // Trophäen
+            GUILayout.BeginVertical("box");
+            GUILayout.Label("Alle Trophäen Freischalten");
+            unlockAllTrophies = GUILayout.Toggle(unlockAllTrophies, "Aktivieren: " + (unlockAllTrophies ? "ON" : "OFF"));
+            GUILayout.EndVertical();
+
+            // Tower Schaden
+            GUILayout.BeginVertical("box");
+            GUILayout.Label("Tower Schaden Boost");
+            towerDamageBoost = GUILayout.Toggle(towerDamageBoost, "Aktivieren: " + (towerDamageBoost ? "ON" : "OFF"));
+            GUILayout.EndVertical();
+
+            // Spielgeschwindigkeit
             GUILayout.BeginVertical("box");
             GUILayout.Label("Spielgeschwindigkeit");
             gameSpeed = GUILayout.HorizontalSlider(gameSpeed, 0.1f, 5.0f);
             GUILayout.Label("Wert: " + gameSpeed.ToString("F2"));
             GUILayout.EndVertical();
 
-            // Affenschaden - eigener Bereich
-            GUILayout.BeginVertical("box");
-            GUILayout.Label("Affenschaden Multiplier");
-            towerDamageMultiplier = GUILayout.HorizontalSlider(towerDamageMultiplier, 0.1f, 10.0f);
-            GUILayout.Label("Wert: " + towerDamageMultiplier.ToString("F2"));
-            GUILayout.EndVertical();
-
             GUILayout.EndArea();
         }
 
-        // Mod-Menü im Startmenü anzeigen
-        public override void OnMainMenuUI()
+        private void EnableGodMode()
         {
-            // Button im Profilbereich oder Einstellungen hinzufügen
+            // Setze die Lebenspunkte aller Türme auf ein sehr hohes Level
+            foreach (var tower in InGame.instance.bridge.GetAllTowers())
+            {
+                tower.life = 9999;
+            }
+        }
+
+        private void GrantInfiniteXP()
+        {
+            // XP-Logik (Beispiel)
+            // Hier könntest du die XP eines Spielers unendlich machen. Es kann von der internen API von BloonsTD6 abhängen, wie du auf XP zugreifen und es ändern kannst.
+        }
+
+        private void GrantInfiniteMoney()
+        {
+            // Unendlich Geld
+            foreach (var player in InGame.instance.bridge.GetAllPlayers())
+            {
+                player.money = 9999999; // Setze Geld auf einen sehr hohen Wert
+            }
+        }
+
+        private void UnlockAllTrophies()
+        {
+            // Trophäen freischalten
+            // Beispiel, wie man alle Trophäen freischaltet (wird die API von BloonsTD6 benötigt)
+            // Du kannst mit der Trophy-System-API von BTD6 arbeiten, um alle Trophäen zu aktivieren
+        }
+
+        private void BoostTowerDamage()
+        {
+            // Tower Schaden boost
+            foreach (var tower in InGame.instance.bridge.GetAllTowers())
+            {
+                tower.damage *= 10; // Beispielsweise den Schaden um den Faktor 10 erhöhen
+            }
+        }
+
+        // Mod-Menü im Pause-Menü anzeigen
+        public override void OnInGameUI()
+        {
             if (GUILayout.Button("Mod Menü öffnen"))
             {
                 showMenu = !showMenu;
             }
         }
 
-        // Pause-Menü-Modifikation
-        public override void OnInGameUI()
+        // Mod-Menü im Hauptmenü anzeigen
+        public override void OnMainMenuUI()
         {
-            // Button im Pause-Menü hinzufügen
             if (GUILayout.Button("Mod Menü öffnen"))
             {
                 showMenu = !showMenu;
