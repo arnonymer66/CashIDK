@@ -59,29 +59,22 @@ namespace MoneyInputMod
 
                     if (Input.GetKeyDown(KeyCode.Return)) // Wenn "Enter" gedrückt wird
                     {
-                        if (int.TryParse(inputText, out int moneyAmount))
+                        if (inputText.Length == 1 && int.TryParse(inputText, out int number) && number >= 0 && number <= 9)
                         {
-                            if (moneyAmount > 0)
+                            // Wenn eine Zahl zwischen 0 und 9 eingegeben wurde, gib 100.000 Geld
+                            if (InGame.instance != null && InGame.instance.bridge != null)
                             {
-                                if (InGame.instance != null && InGame.instance.bridge != null)
-                                {
-                                    // FIX: Verwende den CashSource-Wert für Modding
-                                    InGame.instance.bridge.AddCash(moneyAmount, (Il2CppAssets.Scripts.Simulation.Simulation.CashSource)3);
-                                    MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
-                                }
-                                else
-                                {
-                                    MelonLogger.Warning("InGame bridge nicht verfügbar! (InGame bridge not available!)");
-                                }
+                                InGame.instance.bridge.AddCash(100000, (Il2CppAssets.Scripts.Simulation.Simulation.CashSource)3);
+                                MelonLogger.Msg($"Spieler bekam 100.000 Geld.");
                             }
                             else
                             {
-                                MelonLogger.Warning("Bitte eine positive Zahl eingeben. (Please enter a positive number.)");
+                                MelonLogger.Warning("InGame bridge nicht verfügbar! (InGame bridge not available!)");
                             }
                         }
                         else
                         {
-                            MelonLogger.Warning("Ungültige Zahl eingegeben. (Invalid number entered.)");
+                            MelonLogger.Warning("Bitte eine Zahl zwischen 0 und 9 eingeben. (Please enter a number between 0 and 9.)");
                         }
 
                         showInput = false; // Verstecke das Eingabefeld nach Drücken von Enter
@@ -103,28 +96,22 @@ namespace MoneyInputMod
                 // OK Button (geht auch durch Enter)
                 if (GUILayout.Button("OK") || Input.GetKeyDown(KeyCode.Return))
                 {
-                    if (int.TryParse(inputText, out int moneyAmount))
+                    if (inputText.Length == 1 && int.TryParse(inputText, out int number) && number >= 0 && number <= 9)
                     {
-                        if (moneyAmount > 0)
+                        // Wenn eine Zahl zwischen 0 und 9 eingegeben wurde, gib 100.000 Geld
+                        if (InGame.instance != null && InGame.instance.bridge != null)
                         {
-                            if (InGame.instance != null && InGame.instance.bridge != null)
-                            {
-                                InGame.instance.bridge.AddCash(moneyAmount, (Il2CppAssets.Scripts.Simulation.Simulation.CashSource)3);
-                                MelonLogger.Msg($"Spieler bekam {moneyAmount} Geld.");
-                            }
-                            else
-                            {
-                                MelonLogger.Warning("InGame bridge nicht verfügbar! (InGame bridge not available!)");
-                            }
+                            InGame.instance.bridge.AddCash(100000, (Il2CppAssets.Scripts.Simulation.Simulation.CashSource)3);
+                            MelonLogger.Msg($"Spieler bekam 100.000 Geld.");
                         }
                         else
                         {
-                            MelonLogger.Warning("Bitte eine positive Zahl eingeben. (Please enter a positive number.)");
+                            MelonLogger.Warning("InGame bridge nicht verfügbar! (InGame bridge not available!)");
                         }
                     }
                     else
                     {
-                        MelonLogger.Warning("Ungültige Zahl eingegeben. (Invalid number entered.)");
+                        MelonLogger.Warning("Bitte eine Zahl zwischen 0 und 9 eingeben. (Please enter a number between 0 and 9.)");
                     }
 
                     showInput = false; // Verstecke das Eingabefeld nach Drücken von OK oder Enter
@@ -141,3 +128,4 @@ namespace MoneyInputMod
         }
     }
 }
+
