@@ -6,7 +6,7 @@ using Il2CppAssets.Scripts.Simulation;
 using UnityEngine;
 using System.Collections.Generic;
 
-// Assembly-Attribute müssen vor allen anderen Code-Elementen stehen (nach using!)
+// Assembly attributes should be AFTER all using statements
 [assembly: MelonInfo(typeof(MoneyInputMod.Main), "Advanced Monkey Mod", "1.0.0", "DeinName")]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
 
