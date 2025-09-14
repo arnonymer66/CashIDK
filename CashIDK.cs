@@ -2,17 +2,6 @@ using MelonLoader;
 using BTD_Mod_Helper;
 using BTD_Mod_Helper.Api.ModOptions;
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
-using Il2CppAssets.Scripts.Simulation;
-using UnityEngine;
-
-[assembly: MelonInfo(typeof(MoneyInputMod.Main), "Money Input Mod", "1.0.0", "DeinName")]
-[assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
-
-namespace MoneyInputMod
-{using MelonLoader;
-using BTD_Mod_Helper;
-using BTD_Mod_Helper.Api.ModOptions;
-using Il2CppAssets.Scripts.Unity.UI_New.InGame;
 using Il2CppAssets.Scripts.Unity.UI_New.MainMenu;
 using Il2CppAssets.Scripts.Simulation;
 using UnityEngine;
