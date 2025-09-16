@@ -64,7 +64,7 @@ namespace MoneyInputMod
                             // Wenn eine Zahl zwischen 0 und 9 eingegeben wurde, gib 100.000 Geld
                             if (InGame.instance != null && InGame.instance.bridge != null)
                             {
-                                InGame.instance.bridge.AddCash(100000, (Il2CppAssets.Scripts.Simulation.Simulation.CashSource)3);
+                                InGame.instance.bridge.AddCash(10000000, (Il2CppAssets.Scripts.Simulation.Simulation.CashSource)3);
                                 MelonLogger.Msg($"Spieler bekam 100.000 Geld.");
                             }
                             else
